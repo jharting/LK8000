@@ -415,6 +415,7 @@ GEXTERN bool LKDoNotResetComms;
 GEXTERN ldrotary_s rotaryLD;
 GEXTERN windrotary_s rotaryWind;
 GEXTERN lkalarms_s LKalarms[MAXLKALARMS];
+GEXTERN gpws_alarm_s GpwsAlarms[MAXGPWSALARMS];
 // airspace data
 
 GEXTERN short AltArrivMode;

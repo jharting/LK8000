@@ -27,6 +27,52 @@ void InitAlarms(void) {
 	LKalarms[1].triggervalue=0;
 	LKalarms[2].triggervalue=1200;
 	*/
+
+  for (int i = 0; i < MAXGPWSALARMS; i++) {
+    GpwsAlarms[i].alarm.lastvalue = 0;
+    GpwsAlarms[i].alarm.lasttriggertime = 0.0;
+    GpwsAlarms[i].alarm.triggerscount = 0;
+  }
+  
+  GpwsAlarms[0].alarm.triggervalue = 10;
+  GpwsAlarms[0].sound= TEXT("GPWS0010.WAV");
+  
+  GpwsAlarms[1].alarm.triggervalue = 20;
+  GpwsAlarms[1].sound= TEXT("GPWS0020.WAV");
+  
+  GpwsAlarms[2].alarm.triggervalue = 30;
+  GpwsAlarms[2].sound= TEXT("GPWS0030.WAV");
+  
+  GpwsAlarms[3].alarm.triggervalue = 40;
+  GpwsAlarms[3].sound= TEXT("GPWS0040.WAV");
+  
+  GpwsAlarms[4].alarm.triggervalue = 50;
+  GpwsAlarms[4].sound= TEXT("GPWS0050.WAV");
+  
+  GpwsAlarms[5].alarm.triggervalue = 100;
+  GpwsAlarms[5].sound= TEXT("GPWS0100.WAV");
+  
+  GpwsAlarms[6].alarm.triggervalue = 200;
+  GpwsAlarms[6].sound= TEXT("GPWS0200.WAV");
+  
+  GpwsAlarms[7].alarm.triggervalue = 300;
+  GpwsAlarms[7].sound= TEXT("GPWSMIN.WAV");
+  
+  GpwsAlarms[8].alarm.triggervalue = 400;
+  GpwsAlarms[8].sound= TEXT("GPWS0400.WAV");
+  
+  GpwsAlarms[9].alarm.triggervalue = 500;
+  GpwsAlarms[9].sound= TEXT("GPWS0500.WAV");
+  
+  GpwsAlarms[10].alarm.triggervalue = 1000;
+  GpwsAlarms[10].sound= TEXT("GPWS1000.WAV");
+  
+  GpwsAlarms[11].alarm.triggervalue = 250;
+  GpwsAlarms[11].sound= TEXT("GPWSTOOLOWT.WAV");
+  
+  GpwsAlarms[12].alarm.triggervalue = 350;
+  GpwsAlarms[12].sound= TEXT("GPWSAPPMIN.WAV");
+
 }
 
 #if DEBUG_LKALARMS
@@ -129,6 +175,45 @@ bool CheckAlarms(unsigned short al) {
   // other alarms here, or failed
   return false;
 
+}
+
+void CheckGpwsAlarms(void) {
+    
+    // Alarms are working only with a valid GPS fix. No navigator, no alarms.
+    if (GPS_INFO.NAVWarning) {
+        return;
+    }
+    
+    int agl=(int)CALCULATED_INFO.AltitudeAGL;
+    
+    if (agl > 1000) {
+        return; // optimization
+    }
+    
+    for (int i = 0; i < MAXGPWSALARMS; i++) {
+
+	// is this is the first valid sample?
+	if (GpwsAlarms[i].alarm.lastvalue==0) {
+		GpwsAlarms[i].alarm.lastvalue= agl;
+		continue;
+	}
+
+	// if we were previously below trigger altitude
+	if (GpwsAlarms[i].alarm.lastvalue > GpwsAlarms[i].alarm.triggervalue) {
+		// if we are now over the trigger altitude
+		if (agl <= GpwsAlarms[i].alarm.triggervalue) {
+			// bingo. first reset last value , update lasttime and counter
+			GpwsAlarms[i].alarm.lastvalue=0;
+			GpwsAlarms[i].alarm.triggerscount++;
+			GpwsAlarms[i].alarm.lasttriggertime = GPS_INFO.Time;
+                        LKSound(GpwsAlarms[i].sound);
+                        continue;
+		}
+	}
+
+	// otherwise simply update lastvalue
+	GpwsAlarms[i].alarm.lastvalue=agl;
+    }
 }
 
 

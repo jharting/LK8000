@@ -252,6 +252,7 @@ bool ReducedMapSize(void);
 
 void InitAlarms(void);
 bool CheckAlarms(unsigned short al);
+void CheckGpwsAlarms(void);
 
 void MasterTimeReset(void);
 bool DoOptimizeRoute(void);

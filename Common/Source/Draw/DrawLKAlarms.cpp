@@ -90,6 +90,8 @@ void MapWindow::DrawLKAlarms(HDC hDC, const RECT rc) {
 
 	SelectObject(hDC,oldfont);
   }
+  
+  CheckGpwsAlarms();
 
 }
 

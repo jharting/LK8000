@@ -262,6 +262,7 @@
 
 // Max number of existing LK Alarms
 #define MAXLKALARMS	3
+#define MAXGPWSALARMS	13
 #define MAXLKALARMSTRIGGERS	30	// max number of triggered events per alarm
 #define LKALARMSINTERVAL	10	// seconds of interval for LK alarms
 

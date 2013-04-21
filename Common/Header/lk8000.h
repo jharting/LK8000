@@ -138,6 +138,11 @@ typedef struct {
 } lkalarms_s;
 
 typedef struct {
+	lkalarms_s alarm;
+        TCHAR *sound;
+} gpws_alarm_s;
+
+typedef struct {
   double Latitude;
   double Longitude;
   TCHAR  Name[MAXNEARESTTOPONAME+1];
