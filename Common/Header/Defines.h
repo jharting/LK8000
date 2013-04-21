@@ -263,7 +263,7 @@
 // Max number of existing LK Alarms
 #define MAXLKALARMS	3
 #define MAXLKALARMSTRIGGERS	30	// max number of triggered events per alarm
-#define LKALARMSINTERVAL	60	// seconds of interval for LK alarms
+#define LKALARMSINTERVAL	10	// seconds of interval for LK alarms
 
 // Analysys pages can be called directly
 #define ANALYSYS_PAGE_DEFAULT	  ANALYSIS_PAGE_BAROGRAPH

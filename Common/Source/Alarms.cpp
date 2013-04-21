@@ -66,12 +66,12 @@ bool CheckAlarms(unsigned short al) {
   }
 
   // ok so this is not a duplicated alarm, lets check if we have overcounted
-  if (LKalarms[al].triggerscount >= MAXLKALARMSTRIGGERS) {
-	#if DEBUG_LKALARMS
-	StartupStore(_T("...... Alarms: count exceeded for [%d]\n"),al);
-	#endif
-	return false;
-  }
+//  if (LKalarms[al].triggerscount >= MAXLKALARMSTRIGGERS) {
+//	#if DEBUG_LKALARMS
+//	StartupStore(_T("...... Alarms: count exceeded for [%d]\n"),al);
+//	#endif
+//	return false;
+//  }
 
   // if too early we ignore it in any case
   if (GPS_INFO.Time < (LKalarms[al].lasttriggertime + LKALARMSINTERVAL)) {
@@ -89,11 +89,11 @@ bool CheckAlarms(unsigned short al) {
   //
   if (al<3) {
 
-	int navaltitude=(int)CALCULATED_INFO.NavAltitude;
+	int agl=(int)CALCULATED_INFO.AltitudeAGL;
 
 	// is this is the first valid sample?
 	if (LKalarms[al].lastvalue==0) {
-		LKalarms[al].lastvalue= navaltitude;
+		LKalarms[al].lastvalue= agl;
 		#if DEBUG_LKALARMS
 		StartupStore(_T("...... Alarms: init lastvalue [%d] = %d\n"),al,LKalarms[al].lastvalue);
 		#endif
@@ -101,15 +101,15 @@ bool CheckAlarms(unsigned short al) {
 	}
 
 	// if we were previously below trigger altitude
-	if (LKalarms[al].lastvalue< LKalarms[al].triggervalue) {
+	if (LKalarms[al].lastvalue > LKalarms[al].triggervalue) {
 		#if DEBUG_LKALARMS
 		StartupStore(_T("...... Alarms: armed lastvalue [%d] = %d < trigger <%d>\n"),al,
 		LKalarms[al].lastvalue,LKalarms[al].triggervalue);
 		#endif
 		// if we are now over the trigger altitude
-		if (navaltitude >= LKalarms[al].triggervalue) {
+		if (agl <= LKalarms[al].triggervalue) {
 			#if DEBUG_LKALARMS
-			StartupStore(_T("...... Alarms: RING [%d] = %d\n"),al,navaltitude);
+			StartupStore(_T("...... Alarms: RING [%d] = %d\n"),al,agl);
 			#endif
 			// bingo. first reset last value , update lasttime and counter
 			LKalarms[al].lastvalue=0;
@@ -120,7 +120,7 @@ bool CheckAlarms(unsigned short al) {
 	}
 
 	// otherwise simply update lastvalue
-	LKalarms[al].lastvalue=navaltitude;
+	LKalarms[al].lastvalue=agl;
 	return false;
 
   } // end altitude alarms
